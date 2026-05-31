@@ -8,7 +8,7 @@ steps:
 
 - checkout: self
 
-- bash: $(System.DefaultWorkingDirectory)
+- bash: echo $(System.DefaultWorkingDirectory)
 - bash: ls -R $(System.DefaultWorkingDirectory)
 
 - task: Docker@2
