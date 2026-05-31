@@ -15,7 +15,7 @@ steps:
   displayName: Build and Push Frontend
   inputs:
     containerRegistry: 'Docker-abhisheksinha3327'
-    repository: 'authsphere-frontend'
+    repository: 'abhisheksinha3327/authsphere-frontend'
     command: 'buildAndPush'
     Dockerfile: '$(System.DefaultWorkingDirectory)/frontend/Dockerfile'
     buildContext: '$(System.DefaultWorkingDirectory)/frontend'
