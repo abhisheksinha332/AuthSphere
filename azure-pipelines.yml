@@ -1,0 +1,24 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- checkout: self
+
+- bash: echo $(System.DefaultWorkingDirectory)
+- bash: ls -R $(System.DefaultWorkingDirectory)
+
+- task: Docker@2
+  displayName: Build and Push Frontend
+  inputs:
+    containerRegistry: 'Docker-abhisheksinha3327'
+    repository: 'authsphere-frontend'
+    command: 'buildAndPush'
+    Dockerfile: '$(System.DefaultWorkingDirectory)/frontend/Dockerfile'
+    buildContext: '$(System.DefaultWorkingDirectory)/frontend'
+    tags: |
+      latest
+      $(Build.BuildId)
