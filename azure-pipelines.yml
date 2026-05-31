@@ -10,11 +10,12 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- bash: ls
-- bash: cd frontend
 - task: Docker@2
   inputs:
     containerRegistry: 'Docker-abhisheksinha3327'
     repository: 'authsphere-frontend'
     command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
+    Dockerfile: 'frontend/Dockerfile'
+    tags: |
+      latest
+      $(build.buildId)
