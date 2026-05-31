@@ -1,19 +1,15 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import Login from './login/login'
-import Register from './Register/register'
+import Header from './Components/header'
 import './App.css'
+import ModalComponent from './Components/modal'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
+     <Header />
       <section id="center">
-          <Login />
-          <Register />
+        <ModalComponent />
       </section>
     </>
   )

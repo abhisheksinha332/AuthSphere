@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../api/axios";
 
-export default function Login() {
+export default function Login({ onSuccess = () => {} }) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,6 +12,11 @@ export default function Login() {
         email,
         password
       });
+
+      if (response && response.data && response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        onSuccess();
+      }
     } catch (error) {
       console.error("Login failed:", error);
     }

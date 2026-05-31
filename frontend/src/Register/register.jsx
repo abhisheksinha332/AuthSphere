@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../api/axios";
 
-export default function Register() {
+export default function Register({ onSuccess = () => {} }) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -12,6 +12,18 @@ export default function Register() {
                 email,
                 password
             });
+            // After successful registration, auto-login the user
+            try {
+                const loginResp = await api.post('/auth/login', { email, password });
+                if (loginResp && loginResp.data && loginResp.data.token) {
+                    localStorage.setItem('token', loginResp.data.token);
+                }
+            } catch (err) {
+                // Login after register failed; still call onSuccess so caller can react
+                console.error('Auto-login failed after registration:', err);
+            }
+
+            onSuccess();
         } catch (error) {
             console.error("Registration failed:", error);
         }
