@@ -17,8 +17,8 @@ steps:
     containerRegistry: 'Docker-abhisheksinha3327'
     repository: 'authsphere-frontend'
     command: 'buildAndPush'
-    Dockerfile: 'frontend/Dockerfile'
-    buildContext: 'frontend'
+    Dockerfile: '$(System.DefaultWorkingDirectory)/frontend/Dockerfile'
+    buildContext: '$(System.DefaultWorkingDirectory)/frontend'
     tags: |
       latest
       $(Build.BuildId)
