@@ -11,6 +11,7 @@ pool:
 
 steps:
 - bash: ls
+- bash: cd frontend
 - task: Docker@2
   inputs:
     containerRegistry: 'Docker-abhisheksinha3327'
