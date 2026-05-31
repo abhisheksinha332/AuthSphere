@@ -16,6 +16,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import Button from '@mui/material/Button';
 
 import ModalComponent from './modal';
+import api from '../api/axios';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -58,11 +59,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Header() {
+export default function Header( { setIsAuthenticated } ) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openModal, setOpenModal] = React.useState(false);
   const [modalMode, setModalMode] = React.useState('login');
+  const [userProfile, setUserProfile] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  const token = localStorage.getItem('token')
+const isLoggedIn = Boolean(token)
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -85,7 +90,26 @@ export default function Header() {
             <Button color="inherit" onClick={handleSignupOpen}>Sign Up</Button>
 
 
+  const fetchUserProfileDetails = async () => {
+    try {
+      const response = await api.get('/auth/profile');
+      // axios returns data in response.data
+      return response.data.user || response.data;
+    } catch (error) {
+      console.error('Error fetching user profile details (axios):', error);
+      return { name: 'Unknown User', email: 'unknown@example.com' };
+    }
+  };
+
   const handleProfileMenuOpen = (event) => {
+    fetchUserProfileDetails().then(userData => {
+      console.log('User profile details fetched:', userData);
+      setUserProfile(userData);
+      // You can use userData to display the user's name or other info in the menu
+    }).catch(error => {
+      console.error('Error fetching user profile details:', error);
+    });
+
     setAnchorEl(event.currentTarget);
   };
 
@@ -119,8 +143,13 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Login</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Sign</MenuItem>
+      <MenuItem onClick={handleMenuClose}>{userProfile ? userProfile.name : 'Profile'}</MenuItem>
+      <MenuItem onClick={handleMenuClose}>{userProfile ? userProfile.email : 'Email'}</MenuItem>
+      <MenuItem onClick={() => {
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+        handleMenuClose();
+      }}>Logout</MenuItem>
     </Menu>
   );
 
@@ -189,19 +218,30 @@ export default function Header() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <Button color="inherit" onClick={handleModalOpen}>Login</Button>
-            <Button color="inherit" onClick={handleSignupOpen}>Sign Up</Button>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            {isLoggedIn ? (
+                 <IconButton
+                    size="large"
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="inherit"
+                    >
+                    <AccountCircle />
+                    </IconButton>
+                ) : (
+                <>
+                    <Button color="inherit" onClick={handleModalOpen}>
+                    Login
+                    </Button>
+
+                    <Button color="inherit" onClick={handleSignupOpen}>
+                    Signup
+                    </Button>
+                </>
+                )}
+           
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -219,7 +259,7 @@ export default function Header() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-  <ModalComponent open={openModal} onClose={handleModalClose} mode={modalMode} setMode={setModalMode} />
+  <ModalComponent open={openModal} onClose={handleModalClose} mode={modalMode} setMode={setModalMode} setIsAuthenticated={setIsAuthenticated} />
     </Box>
   );
 }

@@ -92,8 +92,24 @@ export const profile = async (
   req,
   res
 ) => {
-  res.status(200).json({
-    message: "Protected Route",
-    user: req.user
-  });
+  try {
+    const userId = req.user && req.user.userId;
+
+    if (!userId) {
+      return res.status(400).json({ message: "Invalid token payload" });
+    }
+
+    const user = await User.findById(userId).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      message: 'User details retrieved',
+      user
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

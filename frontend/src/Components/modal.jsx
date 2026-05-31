@@ -4,10 +4,11 @@ import Login from '../login/login'
 import Register from '../Register/register'
 
 
-export default function ModalComponent({ open = false, onClose = () => {}, mode = 'login', setMode = () => {} }) {
+export default function ModalComponent({ open = false, onClose = () => {}, mode = 'login', setMode = () => {} , setIsAuthenticated = () => {}}) {
   const handleSuccess = () => {
     // After login or auto-login (post-signup), close the modal
     onClose();
+    setIsAuthenticated(true);
   }
 
   return (
