@@ -8,6 +8,9 @@ steps:
 
 - checkout: self
 
+- bash: $(System.DefaultWorkingDirectory)
+- bash: ls -R $(System.DefaultWorkingDirectory)
+
 - task: Docker@2
   displayName: Build and Push Frontend
   inputs:
